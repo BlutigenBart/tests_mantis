@@ -18,10 +18,10 @@ namespace tests_mantis
         protected string mantis_ver;
         protected string baseURL;
 
-        public RegistrationHelper Registration { get; private set; }
-        public FtpHelper Ftp { get; private set; }
+        public RegistrationHelper Registration { get; set; }
+        public FtpHelper Ftp { get; set; }
+        public JamesHelper James { get; set; }
 
-    
         private static ThreadLocal<ApplicationManager> app = new ThreadLocal<ApplicationManager>();
 
         private ApplicationManager()
@@ -32,6 +32,7 @@ namespace tests_mantis
             mantis_ver = "2.25.4";
             Registration = new RegistrationHelper(this);
             Ftp = new FtpHelper(this);
+            James = new JamesHelper(this);
 
         }
         //Деструктор, вызывается автоматически
@@ -56,7 +57,6 @@ namespace tests_mantis
                 //нужно создать
                 ApplicationManager newInstance = new ApplicationManager();
                 newInstance.driver.Url = "http://localhost/mantisbt-2.25.4/login_page.php";
-                //newInstance.Navigator.GoToHomePage();
                 app.Value = newInstance;
             }
             //если создан то ничего делать не нужно
