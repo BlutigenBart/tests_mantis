@@ -26,11 +26,8 @@ namespace tests_mantis
         //public FtpHelper Ftp { get; set; }
         public JamesHelper James { get; set; }
         public MailHelper Mail { get;  set; }
-        public ProjectManagementHelper projectHelper { get; set; }
-        public ManagementMenuHelper menuHelper { get; set; }
-
-
-
+        //public ProjectManagementHelper projectHelper { get; set; }
+        //public ManagementMenuHelper menuHelper { get; set; }
 
 
         private static ThreadLocal<ApplicationManager> app = new ThreadLocal<ApplicationManager>();
@@ -49,9 +46,6 @@ namespace tests_mantis
             James = new JamesHelper(this);
             Mail = new MailHelper(this);
             loginHelper = new LoginHelper(this);
-            projectHelper = new ProjectManagementHelper(this);
-            menuHelper = new ManagementMenuHelper(this);
-
 
             projectMH = new ProjectManagementHelper(this);
             managmentMH = new ManagementMenuHelper(this);
@@ -85,20 +79,7 @@ namespace tests_mantis
         public IWebDriver Driver { get { return driver; } }
         public LoginHelper Auth { get { return loginHelper; } }
 
-
         public ProjectManagementHelper ProjectManagementHelper { get { return projectMH; } }
         public ManagementMenuHelper ManagementMenuHelper { get { return managmentMH; } }
-        public void Stop()
-        {
-            try
-            {
-                driver.Quit();
-            }
-            catch (Exception)
-            {
-                //ignore errors
-            }
-        }
-
     }
 }

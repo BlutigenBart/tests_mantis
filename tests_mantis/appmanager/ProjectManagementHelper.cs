@@ -112,7 +112,7 @@ namespace tests_mantis
         public ProjectManagementHelper SubmitProjectCreation()
         {
             // Создание группы
-            driver.FindElement(By.XPath("//input[@value='Добавить проект']")).Click();
+            driver.FindElement(By.XPath("//input[@value = 'Добавить проект']")).Click();
             return this;
         }
 
@@ -130,7 +130,7 @@ namespace tests_mantis
 
         public void ExitMantis()
         {
-            driver.FindElement(By.XPath("//div[@id='navbar-container']/div[2]/ul/li[3]/a/span")).Click();
+            driver.FindElement(By.XPath("//div[@id = 'navbar-container']/div[2]/ul/li[3]/a/span")).Click();
             driver.FindElement(By.LinkText("Выход")).Click();
         }
     }
