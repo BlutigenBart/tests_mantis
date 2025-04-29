@@ -17,6 +17,12 @@ namespace tests_mantis
         {
             //Получение доступа к единственному экземпляру который хранится в ApplicationManager
             app = ApplicationManager.GetInstance();
+
+            AccountData account = new AccountData()
+            {
+                Name = "administrator",
+                Password = "root"
+            };
         }
 
         // 1 генератор который генерирует разные числа после вынесения из метода GenerateRandomString
@@ -31,5 +37,6 @@ namespace tests_mantis
             }
             return builder.ToString();
         }
+
     }
 }
