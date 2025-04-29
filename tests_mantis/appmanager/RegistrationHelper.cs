@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using OpenQA.Selenium;
+using OpenQA.Selenium.DevTools.V133.Network;
 using OpenQA.Selenium.Firefox;
 using OpenQA.Selenium.Support.UI;
 using Assert = NUnit.Framework.Assert;
@@ -21,7 +23,9 @@ namespace tests_mantis
             OpenRegistrationForm();
             FillRegistrationForm(account);
             SubmitRegistration();
-
+            String url = GetConfirmationUrl(account);
+            FillPasswordForm(url, account);
+            SubmitPasswordForm();
         }
 
         public void OpenMainPage()
@@ -42,6 +46,25 @@ namespace tests_mantis
         public void SubmitRegistration()
         {
             driver.FindElement(By.CssSelector("input.button")).Click();
+        }
+
+        private string GetConfirmationUrl(AccountData account)
+        {
+            String message = manager.Mail.GetLastMail(account);
+            Match match = Regex.Match(message, @"http://\S*");
+            return match.Value;
+        }
+
+        private void FillPasswordForm(string url, AccountData account)
+        {
+            driver.Url = url;
+            driver.FindElement(By.Name("password")).SendKeys(account.Password);
+            driver.FindElement(By.Name("password_confirm")).SendKeys(account.Password);
+        }
+
+        private void SubmitPasswordForm()
+        {
+            driver.FindElement(By.XPath("//button[@type='submit']")).Click();
         }
     }
 }
