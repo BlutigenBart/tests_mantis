@@ -17,8 +17,8 @@ namespace tests_mantis
         public void ProjectRemovalTest()
         {
             app.Auth.Login();
-            app.ManagementMenuHelper.Control();
-            app.ManagementMenuHelper.ProjectsTab();
+
+            app.ManagementMenuHelper.ConProjTab();
             app.ProjectManagementHelper.ConfirmProjectExists();
 
             List<ProjectData> oldProjectList = app.ProjectManagementHelper.GetProjectList();

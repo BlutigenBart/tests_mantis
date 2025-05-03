@@ -9,14 +9,15 @@ namespace tests_mantis
     public class AccountData
     {
         public AccountData() { }
+        public string Id { get; set; }
         public string Name { get; set; }
         public string Password { get; set; }
         public string Email { get; set; }
-
+        
         //private string name = "administrator";
         //private string password = "root";
 
-        
+
 
         //public AccountData(string name, string password)
         //{

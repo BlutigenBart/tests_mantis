@@ -24,6 +24,7 @@ namespace tests_mantis
                     MailMessage message = pop3.GetMessage(1);
                     string body = message.Body;
                     pop3.DeleteMessage(1);
+                    pop3.LogOut(); //Удаляет все письма из лекции 10.1
                     return body;
                 }
                 else

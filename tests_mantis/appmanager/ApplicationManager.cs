@@ -16,16 +16,16 @@ namespace tests_mantis
         protected IWebDriver driver; //protected означает что оно внутреннее но наследники получают к нему доступ
         protected string mantis_ver;
         protected string baseURL;
-
         protected LoginHelper loginHelper;
         protected ProjectManagementHelper projectMH;
         protected ManagementMenuHelper managmentMH;
 
 
         public RegistrationHelper Registration { get; set; }
-        //public FtpHelper Ftp { get; set; }
+        public FtpHelper Ftp { get; set; }
         public JamesHelper James { get; set; }
         public MailHelper Mail { get;  set; }
+        public AdminHelper Admin { get; set; }
         //public ProjectManagementHelper projectHelper { get; set; }
         //public ManagementMenuHelper menuHelper { get; set; }
 
@@ -34,18 +34,19 @@ namespace tests_mantis
 
         private ApplicationManager()
         {
-            //driver = new ChromeDriver();
+            driver = new ChromeDriver();
             //driver = new FirefoxDriver();
-            string geckoDriverPath = @"C:\Windows\SysWOW64\geckodriver.exe";
-            driver = new FirefoxDriver(geckoDriverPath);
+            //string geckoDriverPath = @"C:\Windows\SysWOW64\geckodriver.exe";
+            //driver = new FirefoxDriver(geckoDriverPath);
             //baseURL = "http://localhost/mantisbt-2.25.4/login_page.php";
-            baseURL = "http://localhost/mantisbt-2.25.4/";
+            baseURL = "http://localhost/mantisbt-2.25.4";
             //mantis_ver = "2.25.4";
             Registration = new RegistrationHelper(this);
-            //Ftp = new FtpHelper(this);
+            Ftp = new FtpHelper(this);
             James = new JamesHelper(this);
             Mail = new MailHelper(this);
             loginHelper = new LoginHelper(this);
+            Admin = new AdminHelper(this, baseURL);
 
             projectMH = new ProjectManagementHelper(this);
             managmentMH = new ManagementMenuHelper(this);
@@ -69,7 +70,7 @@ namespace tests_mantis
             {
                 //нужно создать
                 ApplicationManager newInstance = new ApplicationManager();
-                //newInstance.driver.Url = "http://localhost/mantisbt-2.25.4/login_page.php";
+                newInstance.driver.Url = newInstance.baseURL + "/login_page.php";
                 app.Value = newInstance;
             }
             //если создан то ничего делать не нужно
