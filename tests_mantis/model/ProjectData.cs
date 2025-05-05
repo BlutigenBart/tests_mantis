@@ -10,11 +10,13 @@ namespace tests_mantis
 {
     public class ProjectData : IEquatable<ProjectData>, IComparable<ProjectData>
     {
-        public string ProjectName { get; set; }
+        public string Name { get; set; }
+        public string Id { get; set; }
+        public string Description { get; set; }
         public ProjectData() {}
-        public ProjectData(string projectName)
+        public ProjectData(string name)
         {
-            ProjectName = projectName;
+            Name = name;
         }
         public bool Equals(ProjectData other)
         {
@@ -26,7 +28,7 @@ namespace tests_mantis
             {
                 return true;
             }
-            return ProjectName == other.ProjectName;
+            return Name == other.Name;
         }
         public int CompareTo(ProjectData other)
         {
@@ -34,7 +36,7 @@ namespace tests_mantis
             {
                 return 1;
             }
-            return ProjectName.CompareTo(other.ProjectName);
+            return Name.CompareTo(other.Name);
         }
     }
 }

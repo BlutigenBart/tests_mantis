@@ -64,7 +64,7 @@ namespace tests_mantis
 
         private void SubmitPasswordForm()
         {
-            driver.FindElement(By.XPath("//button[@type='submit']")).Click();
+            driver.FindElement(By.XPath("//button[@type = 'submit']")).Click();
         }
     }
 }

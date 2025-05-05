@@ -12,17 +12,19 @@ namespace tests_mantis
 
         protected ApplicationManager app;
 
-        [TestFixtureSetUp]
+        //[TestFixtureSetUp]
+        //[SetUp]
+        [OneTimeSetUp]
         protected void SetupApplicationManager()
         {
             //Получение доступа к единственному экземпляру который хранится в ApplicationManager
             app = ApplicationManager.GetInstance();
 
-            AccountData account = new AccountData()
-            {
-                Name = "administrator",
-                Password = "root"
-            };
+            //AccountData account = new AccountData()
+            //{
+            //    Name = "administrator",
+            //    Password = "root"
+            //};
         }
 
         // 1 генератор который генерирует разные числа после вынесения из метода GenerateRandomString

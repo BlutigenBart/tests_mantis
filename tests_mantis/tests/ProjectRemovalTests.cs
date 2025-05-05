@@ -4,36 +4,67 @@ using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
 using System.IO;
-using NUnit.Framework.Legacy;
+//using NUnit.Framework.Legacy;
 using Assert = NUnit.Framework.Assert;
+using System.Security.Cryptography;
 
 namespace tests_mantis
 {
     [TestFixture]
-    public class ProjectRemovalTests : TestBase
+    public class ProjectRemovalTests : AuthTestBase
     {
+        [Test]
+        public void ApiSoapProjectRemovalTest()
+        {
+            AccountData account = new AccountData()
+            {
+                Name = "administrator",
+                Password = "root"
+            };
+
+            List<ProjectData> oldProjectList = app.ApiSoap.GetAllProjectsApiSoap(account);
+
+            if (oldProjectList.Count == 0)
+            {
+                ProjectData project = new ProjectData()
+                {
+                    Name = "NewProject" + GenerateRandomString(25),
+                    Description = "Description" + GenerateRandomString(25)
+                };
+                app.ApiSoap.AddProjectSoapApi(account, project);
+                oldProjectList = app.ApiSoap.GetAllProjectsApiSoap(account);
+            }
+
+
+            ProjectData toBeRemoved = oldProjectList[0];
+            app.ApiSoap.DeleteProjectSoapApi(account, toBeRemoved);
+
+            List<ProjectData> newProjectList = app.ApiSoap.GetAllProjectsApiSoap(account);
+
+            oldProjectList.Remove(toBeRemoved);
+            oldProjectList.Sort();
+            newProjectList.Sort();
+
+            Assert.AreEqual(oldProjectList, newProjectList);
+        }
 
         [Test]
         public void ProjectRemovalTest()
         {
-            app.Auth.Login();
-
-            app.ManagementMenuHelper.ConProjTab();
             app.ProjectManagementHelper.ConfirmProjectExists();
-
             List<ProjectData> oldProjectList = app.ProjectManagementHelper.GetProjectList();
-
-            ProjectData ToBeRemoved = oldProjectList[0];
-            app.ProjectManagementHelper.SelectProjectOne();
-            app.ProjectManagementHelper.DeleteProject();
-            app.ProjectManagementHelper.CommitDeleteProject();
+            
+            ProjectData toBeRemoved = oldProjectList[0];
+            app.ProjectManagementHelper.DeleteProject(0);
 
             List<ProjectData> newProjectList = app.ProjectManagementHelper.GetProjectList();
 
-            oldProjectList.Remove(ToBeRemoved);
+            oldProjectList.Remove(toBeRemoved);
+            oldProjectList.Sort();
+            newProjectList.Sort();
 
             Assert.AreEqual(oldProjectList, newProjectList);
-            app.ProjectManagementHelper.ExitMantis();
+            app.ProjectManagementHelper.LogoutMantis();
         }
     }
 }

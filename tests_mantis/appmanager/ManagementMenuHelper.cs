@@ -14,9 +14,9 @@ namespace tests_mantis
 {
     public class ManagementMenuHelper : HelperBase
     {
-        public ManagementMenuHelper(ApplicationManager manager) : base(manager) {}
+        public ManagementMenuHelper(ApplicationManager manager) : base(manager) { }
 
-        public void Control()
+        public void ControlMenu()
         {
             driver.FindElement(By.CssSelector("i.fa.fa-gears.menu-icon")).Click();
         }
@@ -24,15 +24,21 @@ namespace tests_mantis
         {
             driver.FindElement(By.XPath("//li//a[contains(text(),'Управление проектами')]")).Click();
         }
-        public void InitNewProject()
+        public void InitProject()
         {
-            driver.FindElement(By.XPath("//button[@type = 'submit']")).Click();
+            driver.FindElement(By.XPath("//button[@class = 'btn btn-primary btn-white btn-round']")).Click();
         }
 
-        public void ConProjTab()
+        public void GoToProjectTab()
         {
-            Control();
+            ControlMenu();
             ProjectsTab();
+        }
+        public void InitNewProject()
+        {
+            ControlMenu();
+            ProjectsTab();
+            InitNewProject();
         }
     }
 }

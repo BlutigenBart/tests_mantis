@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using OpenQA.Selenium;
 //using OpenQA.Selenium.DevTools.V133.Network;
@@ -17,51 +18,43 @@ namespace tests_mantis
     {
         public ProjectManagementHelper(ApplicationManager manager) : base(manager) { }
 
-        public void EnterName(string name)
-        {
-            driver.FindElement(By.Id("project-name")).Click();
-            driver.FindElement(By.Id("project-name")).Clear();
-            driver.FindElement(By.Id("project-name")).SendKeys(name);
-        }
         /// <summary>
         /// Кнопка "Добавить проект" в окне "Добавление проекта"
         /// </summary>
         public void AddProject()
         {
-            driver.FindElement(By.XPath("//input[@value='Добавить проект']")).Click();
+            driver.FindElement(By.XPath("//input[@value = 'Добавить проект']")).Click();
         }
 
-        public void SelectProjectOne()
+        public void SelectProject(int index)
         {
-            driver.FindElement(By.XPath("//tr[1]/td/a")).Click();
+            driver.FindElement(By.XPath("//tr[" + (index+1) + "]/td/a")).Click();
         }
 
-        public void DeleteProject()
+        public void DeleteSelectedProject()
         {
             driver.FindElement(By.XPath("//input[@class = 'btn btn-primary btn-sm btn-white btn-round']")).Click();
         }
 
-        public void CommitDeleteProject()
+        public void ConfirmDeleteProject()
         {
             driver.FindElement(By.XPath("//input[@class = 'btn btn-primary btn-white btn-round']")).Click();
         }
         public List<ProjectData> GetProjectList()
         {
-            manager.ManagementMenuHelper.Control();
-            manager.ManagementMenuHelper.ProjectsTab();
-            List<ProjectData> project1 = new List<ProjectData>();
+            manager.ManagementMenuHelper.GoToProjectTab();
+            List<ProjectData> projects = new List<ProjectData>();
 
-            ICollection<IWebElement> row = driver.FindElements(By.XPath("//tr/td/a"));
+            ICollection<IWebElement> elements = driver.FindElements(By.XPath("//tr/td/a"));
 
-            foreach (IWebElement row2 in row)
+            foreach (IWebElement element in elements)
             {
-                string nameProject = row2.Text;
-
-                ProjectData project2 = new ProjectData(nameProject);
-                project1.Add(project2);
-
+                projects.Add(new ProjectData()
+                {
+                    Name = element.Text
+                });
             }
-            return project1;
+            return projects;
         }
         public bool IsProjectDetection()
         {
@@ -75,13 +68,15 @@ namespace tests_mantis
             if (!IsProjectDetection())
             {
                 //Переход на страницу создания проектов
-                manager.ManagementMenuHelper.Control();
-                manager.ManagementMenuHelper.ProjectsTab();
+                manager.ManagementMenuHelper.GoToProjectTab();
                 //manager.ManagementMenuHelper.InitNewProject();
                 // Если проектов нет, создает один
-                ProjectData project = new ProjectData();
-                project.ProjectName = "Andreevich543";
+                ProjectData project = new ProjectData()
+                {
+                    Name = "ProjectName" + TestBase.GenerateRandomString(30),
+                    Description = "Description" + TestBase.GenerateRandomString(30)
 
+                };
                 Create(project);  // Вызываем метод для создания группы
             }
             return this;
@@ -89,48 +84,57 @@ namespace tests_mantis
 
         public ProjectManagementHelper Create(ProjectData project)
         {
-            manager.ManagementMenuHelper.Control();
-            manager.ManagementMenuHelper.ProjectsTab();
+            manager.ManagementMenuHelper.GoToProjectTab();
+            InitNewProjectCreation();
+            FillProjectName(project);
+            SubmitProjectCreation();
+            Thread.Sleep(3000);
+            return this;
+        }
+
+        public ProjectManagementHelper InitNewProjectCreation()
+        {
+            driver.FindElement(By.XPath("//button[@type = 'submit']")).Click();
+            return this;
+        }
+
+        public ProjectManagementHelper FillProjectName(ProjectData project)
+        {
+            driver.FindElement(By.Id("project-name")).Click();
+            driver.FindElement(By.Id("project-name")).Clear();
+            driver.FindElement(By.Id("project-name")).SendKeys(project.Name);
+            return this;
+        }
+        /// <summary>
+        /// Создание группы
+        /// </summary>
+        public ProjectManagementHelper SubmitProjectCreation()
+        {
+            driver.FindElement(By.XPath("//input[@value = 'Добавить проект']")).Click();
+            return this;
+        }
+
+        public ProjectManagementHelper CreateProject(ProjectData project)
+        {
+            manager.ManagementMenuHelper.GoToProjectTab();
             InitNewProjectCreation();
             FillProjectName(project);
             SubmitProjectCreation();
             return this;
         }
 
-        public ProjectManagementHelper InitNewProjectCreation()
+        public ProjectManagementHelper DeleteProject(int i)
         {
-            manager.ManagementMenuHelper.InitNewProject();
+            manager.ManagementMenuHelper.GoToProjectTab();
+            SelectProject(i);
+            DeleteSelectedProject();
+            ConfirmDeleteProject();
             return this;
         }
 
-        public ProjectManagementHelper FillProjectName(ProjectData project)
+        public void LogoutMantis()
         {
-            EnterName(project.ProjectName);
-            return this;
-        }
-
-        public ProjectManagementHelper SubmitProjectCreation()
-        {
-            // Создание группы
-            driver.FindElement(By.XPath("//input[@value = 'Добавить проект']")).Click();
-            return this;
-        }
-
-        public ProjectManagementHelper CreateProject()
-        {
-            //manager.ManagementMenuHelper.ConProjTab();
-            manager.ManagementMenuHelper.InitNewProject();
-            string projectName = TestBase.GenerateRandomString(20);
-            ProjectData project = new ProjectData(projectName);
-            //ProjectData project = new ProjectData(projectName);
-            EnterName(project.ProjectName);
-            AddProject();
-            return this;
-        }
-
-        public void ExitMantis()
-        {
-            driver.FindElement(By.XPath("//div[@id = 'navbar-container']/div[2]/ul/li[3]/a/span")).Click();
+            driver.FindElement(By.XPath("//span[@class = 'user-info']")).Click();
             driver.FindElement(By.LinkText("Выход")).Click();
         }
     }

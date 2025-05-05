@@ -16,37 +16,28 @@ namespace tests_mantis
         protected IWebDriver driver; //protected означает что оно внутреннее но наследники получают к нему доступ
         protected string mantis_ver;
         protected string baseURL;
-        protected LoginHelper loginHelper;
+        //protected LoginHelper loginHelper;
         protected ProjectManagementHelper projectMH;
         protected ManagementMenuHelper managmentMH;
-
-
-        public RegistrationHelper Registration { get; set; }
-        public FtpHelper Ftp { get; set; }
-        public JamesHelper James { get; set; }
-        public MailHelper Mail { get;  set; }
-        public AdminHelper Admin { get; set; }
-        //public ProjectManagementHelper projectHelper { get; set; }
-        //public ManagementMenuHelper menuHelper { get; set; }
-
 
         private static ThreadLocal<ApplicationManager> app = new ThreadLocal<ApplicationManager>();
 
         private ApplicationManager()
         {
-            driver = new ChromeDriver();
-            //driver = new FirefoxDriver();
+            //driver = new ChromeDriver();
+            driver = new FirefoxDriver();
             //string geckoDriverPath = @"C:\Windows\SysWOW64\geckodriver.exe";
             //driver = new FirefoxDriver(geckoDriverPath);
             //baseURL = "http://localhost/mantisbt-2.25.4/login_page.php";
             baseURL = "http://localhost/mantisbt-2.25.4";
             //mantis_ver = "2.25.4";
             Registration = new RegistrationHelper(this);
-            Ftp = new FtpHelper(this);
+            //Ftp = new FtpHelper(this);
             James = new JamesHelper(this);
             Mail = new MailHelper(this);
-            loginHelper = new LoginHelper(this);
+            Auth = new LoginHelper(this);
             Admin = new AdminHelper(this, baseURL);
+            ApiSoap = new ApiSoapHelper(this);
 
             projectMH = new ProjectManagementHelper(this);
             managmentMH = new ManagementMenuHelper(this);
@@ -78,9 +69,17 @@ namespace tests_mantis
         }
 
         public IWebDriver Driver { get { return driver; } }
-        public LoginHelper Auth { get { return loginHelper; } }
-
+        public LoginHelper Auth { get; set; }
         public ProjectManagementHelper ProjectManagementHelper { get { return projectMH; } }
         public ManagementMenuHelper ManagementMenuHelper { get { return managmentMH; } }
+        public RegistrationHelper Registration { get; set; }
+        //public FtpHelper Ftp { get; set; }
+        public JamesHelper James { get; set; }
+        public MailHelper Mail { get; set; }
+        public AdminHelper Admin { get; set; }
+        public ApiSoapHelper ApiSoap { get; set; }
+
+        //public ProjectManagementHelper projectHelper { get; set; }
+        //public ManagementMenuHelper menuHelper { get; set; }
     }
 }
